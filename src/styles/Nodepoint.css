@@ -1,0 +1,30 @@
+#node {
+  width: 20px;
+  height: 20px;
+  border: solid 0.01em #999;
+}
+
+#node:hover::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  opacity: 0.3;
+  background-color: grey;
+}
+/* 
+#node:hover {
+  mix-blend-mode: multiply;
+  background-color: rgb(216, 216, 216);
+} */
+.node-finish {
+  background-color: red;
+}
+
+.node-start {
+  background-color: green;
+}
+
+.node-wall {
+  background-color: rgb(12, 53, 71);
+}

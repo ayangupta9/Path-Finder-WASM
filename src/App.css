@@ -1,0 +1,15 @@
+.App {
+  height: 100%;
+  width: 100%;
+  background-color: #ffffff;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  color: #333333;
+}
+
+h1 {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
