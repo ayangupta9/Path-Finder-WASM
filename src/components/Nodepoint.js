@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { NodeContext } from '../contexts/NodeContext'
 import '../styles/Nodepoint.css'
 
 const Nodepoint = props => {
@@ -21,7 +22,16 @@ const Nodepoint = props => {
       onClick={() => {
         props.onNodeClick(props.row, props.col)
       }}
-      className={`${nodeClass} ${props.row}-${props.col}`}
+      onMouseDown={() => {
+        props.onMouseDown(props.row, props.col)
+      }}
+      onMouseUp={() => {
+        props.onMouseUp()
+      }}
+      onMouseEnter={() => {
+        props.onMouseEnter(props.row, props.col)
+      }}
+      className={`nodepoint ${nodeClass} ${props.row}-${props.col}`}
       id={'node'}
     ></div>
   )

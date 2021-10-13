@@ -12,17 +12,16 @@
   opacity: 0.3;
   background-color: grey;
 }
-/* 
-#node:hover {
-  mix-blend-mode: multiply;
-  background-color: rgb(216, 216, 216);
-} */
+
 .node-finish {
   background-color: red;
 }
 
 .node-start {
   background-color: green;
+}
+.node-path {
+  background-color: yellow;
 }
 
 .node-wall {

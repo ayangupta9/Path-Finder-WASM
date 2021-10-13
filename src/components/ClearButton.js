@@ -14,6 +14,9 @@ const ClearButton = () => {
 
   return (
     <Button
+      style={{
+        width: 200
+      }}
       onClick={onButtonClick}
       label='CLEAR GRID'
       variant='neutral'

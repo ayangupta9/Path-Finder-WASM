@@ -3,11 +3,14 @@ import Nodepoint from './Nodepoint'
 import '../styles/Grid.css'
 import { NodeContext } from '../contexts/NodeContext'
 
+export const gridWidth = 40
+export const gridHeight = 20
+
 const getInitialGrid = () => {
   const grid = []
-  for (let col = 0; col < 30; col++) {
+  for (let col = 0; col < gridWidth; col++) {
     const currentRow = []
-    for (let row = 0; row < 15; row++) {
+    for (let row = 0; row < gridHeight; row++) {
       currentRow.push(createNode(row, col))
     }
     grid.push(currentRow)
@@ -35,17 +38,70 @@ const Grid = props => {
     setIsStart,
     setIsFinish,
     isCleared,
-    setIsCleared
+    setIsCleared,
+    startPos,
+    setStartPos,
+    finishPos,
+    setFinishPos,
+    wallPos,
+    setWallPos
   } = useContext(NodeContext)
   const [grid, setGrid] = useState([])
+  const [mousePressed, setMousePressed] = useState(false)
+
+  const clearGrid = () => {
+    setGrid(getInitialGrid())
+    // fconsole.log(isCleared)
+    Array.from(document.getElementsByClassName('nodepoint')).forEach(node => {
+      node.classList.remove('node-path')
+    })
+    setIsCleared(false)
+    setIsStart(false)
+    setIsFinish(false)
+    setStartPos({ row: -1, col: -1 })
+    setFinishPos({ row: -1, col: -1 })
+    setWallPos([])
+  }
+
+  const handleMouseDown = (row, col) => {
+    if (props.choosingOptions === 'wall') {
+      let newGrid = grid.slice()
+      const node = newGrid[row][col]
+      let newNode = {
+        ...node,
+        isWall: !node.isWall
+      }
+      newGrid[row][col] = newNode
+      setGrid(newGrid)
+      setWallPos([...wallPos, { row: row, col: col }])
+      setMousePressed(true)
+    }
+  }
+
+  const handleMouseEnter = (row, col) => {
+    if (!mousePressed) {
+      return
+    }
+
+    let newGrid = grid.slice()
+    const node = newGrid[row][col]
+    let newNode = {
+      ...node,
+      isWall: !node.isWall
+    }
+    newGrid[row][col] = newNode
+    setGrid(newGrid)
+    setWallPos([...wallPos, { row: row, col: col }])
+    // setMousePressed(true)
+  }
+
+  const handleMouseUp = () => {
+    setMousePressed(false)
+  }
 
   useEffect(() => {
     if (isCleared) {
-      setGrid(getInitialGrid())
-      console.log(isCleared)
-      setIsCleared(false)
-      setIsStart(false)
-      setIsFinish(false)
+      clearGrid()
     }
   }, [isCleared, setIsCleared])
 
@@ -67,6 +123,7 @@ const Grid = props => {
           newGrid[row][col] = newNode
           setGrid(newGrid)
           setIsStart(true)
+          setStartPos({ row: row, col: col })
         }
         break
       case 'finish':
@@ -78,15 +135,8 @@ const Grid = props => {
           newGrid[row][col] = newNode
           setGrid(newGrid)
           setIsFinish(true)
+          setFinishPos({ row: row, col: col })
         }
-        break
-      case 'wall':
-        newNode = {
-          ...node,
-          isWall: !node.isWall
-        }
-        newGrid[row][col] = newNode
-        setGrid(newGrid)
         break
       default:
         break
@@ -94,7 +144,7 @@ const Grid = props => {
   }
 
   return (
-    <div id='grid'>
+    <div id='grid' ref={NodeContext.nodeRef}>
       {grid.map((row, rowId) => {
         return (
           <div key={rowId}>
@@ -111,6 +161,9 @@ const Grid = props => {
                   isFinish={node.isFinish}
                   isWall={node.isWall}
                   isVisited={node.isVisited}
+                  onMouseDown={handleMouseDown}
+                  onMouseUp={handleMouseUp}
+                  onMouseEnter={handleMouseEnter}
                   key={nodeId}
                 />
               )

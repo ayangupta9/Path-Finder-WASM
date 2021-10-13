@@ -4,12 +4,13 @@ const Header = () => {
   return (
     <div
       style={{
-        position: 'absolute',
+        // position: 'absolute',
         fontSize: '25px',
         fontWeight: 'w100',
         display: 'flex',
         width: '100%',
-        top: '10%',
+        marginBottom: '1.5em',
+        // top: '10%',
         justifyContent: 'center',
         alignItems: 'center',
         textShadow: '2px 2px lightcoral'
