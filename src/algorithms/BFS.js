@@ -1,3 +1,5 @@
+import bfsHelper from './helper/bfsHelper.mjs'
+
 export const bfs = async (
   startRow,
   startCol,
@@ -7,38 +9,19 @@ export const bfs = async (
   gridWidth,
   gridHeight
 ) => {
-  let asmLibraryArg = {
-    __cxa_allocate_exception: () => {},
-    __cxa_throw: () => {},
-    abort: () => {},
-    emscripten_memcpy_big: () => {},
-    emscripten_resize_heap: () => {}
+  const bfsHelperModule = await bfsHelper({
+    noInitialRun: true,
+    noExitRuntime: true
+  })
+
+  const vec = bfsHelperModule.returnVector()
+  vec.resize(walls.length + 1, 0)
+  for (let i = 0; i < walls.length; i++) {
+    vec.set(i, walls[i])
   }
-  let info = {
-    env: asmLibraryArg,
-    wasi_snapshot_preview1: asmLibraryArg
-  }
 
-  let offset = 0
-
-  const response = await fetch('./wasmalgos/solvebfs.wasm')
-  const buffer = await response.arrayBuffer()
-  const wasm = await WebAssembly.instantiate(buffer, info)
-  const module = wasm.instance.exports
-  const { solveBFS, memory } = module
-
-  console.log(module)
-
-  const wallsLength = walls.length
-  let wallsJSArray = new Int32Array(memory.buffer, offset, wallsLength)
-  wallsJSArray.set(walls)
-
-  let result = new Int32Array(memory.buffer, 0, gridWidth * gridHeight * 2)
-  console.log(37)
-  solveBFS(
-    walls,
-    wallsLength,
-    result,
+  let result = bfsHelperModule.solveBFS(
+    vec,
     startRow,
     startCol,
     endRow,
@@ -47,17 +30,31 @@ export const bfs = async (
     gridHeight
   )
 
-  let optimumPath = []
-  for (let i = 1; i < result.length; i += 2) {
-    if (result[i] === -1) {
-      break
-    } else {
-      optimumPath.push({ first: result[i], second: result[i + 1] })
-    }
+  const pathArraySize = result.get(0)
+  let optimumPathArray = []
+  for (let i = 1; i < pathArraySize; i += 2) {
+    optimumPathArray.push({ first: result.get(i), second: result.get(i + 1) })
   }
 
-  wallsJSArray = null
-  result = null
+  const visitedNodesArraySize = result.get(pathArraySize + 2)
+  let visitedNodesArray = []
 
-  return optimumPath
+  for (
+    let i = pathArraySize + 3;
+    i < pathArraySize + 2 + visitedNodesArraySize;
+    i += 2
+  ) {
+    if (result.get(i) === startCol && result.get(i + 1) === startRow) {
+      continue
+    }
+    if (result.get(i) === endCol && result.get(i + 1) === endRow) {
+      continue
+    }
+    visitedNodesArray.push({
+      first: result.get(i),
+      second: result.get(i + 1)
+    })
+  }
+
+  return { optimumPathArray, visitedNodesArray }
 }

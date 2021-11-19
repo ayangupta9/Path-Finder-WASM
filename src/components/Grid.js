@@ -51,29 +51,49 @@ const Grid = props => {
 
   const clearGrid = () => {
     setGrid(getInitialGrid())
-    // fconsole.log(isCleared)
-    Array.from(document.getElementsByClassName('nodepoint')).forEach(node => {
+    Array.from(document.getElementsByClassName('node-path')).forEach(node => {
       node.classList.remove('node-path')
     })
+    Array.from(document.getElementsByClassName('node-visited')).forEach(
+      node => {
+        node.classList.remove('node-visited')
+      }
+    )
     setIsCleared(false)
     setIsStart(false)
     setIsFinish(false)
     setStartPos({ row: -1, col: -1 })
     setFinishPos({ row: -1, col: -1 })
     setWallPos([])
+
+    console.log(document.getElementsByClassName('node-path'))
   }
 
   const handleMouseDown = (row, col) => {
     if (props.choosingOptions === 'wall') {
       let newGrid = grid.slice()
       const node = newGrid[row][col]
+
       let newNode = {
         ...node,
         isWall: !node.isWall
       }
       newGrid[row][col] = newNode
       setGrid(newGrid)
-      setWallPos([...wallPos, { row: row, col: col }])
+
+      if (newNode.isWall) {
+        setWallPos([...wallPos, { row: row, col: col }])
+      } else {
+        let result = []
+        console.log(wallPos)
+        wallPos.forEach(pos => {
+          if (pos.row === row && pos.col === col) {
+          } else {
+            result.push(pos)
+          }
+        })
+        setWallPos(result)
+      }
       setMousePressed(true)
     }
   }
@@ -85,14 +105,27 @@ const Grid = props => {
 
     let newGrid = grid.slice()
     const node = newGrid[row][col]
+
     let newNode = {
       ...node,
       isWall: !node.isWall
     }
     newGrid[row][col] = newNode
     setGrid(newGrid)
-    setWallPos([...wallPos, { row: row, col: col }])
-    // setMousePressed(true)
+
+    if (newNode.isWall) {
+      setWallPos([...wallPos, { row: row, col: col }])
+    } else {
+      let result = []
+      console.log(wallPos)
+      wallPos.forEach(pos => {
+        if (pos.row === row && pos.col === col) {
+        } else {
+          result.push(pos)
+        }
+      })
+      setWallPos(result)
+    }
   }
 
   const handleMouseUp = () => {

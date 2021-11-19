@@ -12,6 +12,7 @@
     "react-rainbow-components": "^1.27.0",
     "react-scripts": "4.0.3",
     "react-toastify": "^8.0.3",
+    "wasm-arrays": "^1.0.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {

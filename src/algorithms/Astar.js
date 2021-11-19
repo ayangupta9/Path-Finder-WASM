@@ -1,3 +1,11 @@
+import astarHelper from './helper/astarHelper.mjs'
+
+const euclideanDistance = (coor1, coor2) => {
+  const x = coor2.second - coor1.second
+  const y = coor2.first - coor1.first
+  return Math.sqrt(x * x + y * y)
+}
+
 export const astar = async (
   startRow,
   startCol,
@@ -7,40 +15,19 @@ export const astar = async (
   gridWidth,
   gridHeight
 ) => {
-  let asmLibraryArg = {
-    __cxa_allocate_exception: () => {},
-    __cxa_throw: () => {},
-    abort: () => {},
-    emscripten_memcpy_big: () => {},
-    emscripten_resize_heap: () => {},
-    fd_write: () => {},
-    setTempRet0: () => {}
+  const astarHelperModule = await astarHelper({
+    noInitialRun: true,
+    noExitRuntime: true
+  })
+
+  const vec = astarHelperModule.returnVector()
+  vec.resize(walls.length + 1, 0)
+  for (let i = 0; i < walls.length; i++) {
+    vec.set(i, walls[i])
   }
 
-  let info = {
-    env: asmLibraryArg,
-    wasi_snapshot_preview1: asmLibraryArg
-  }
-
-  let offset = 0
-  const response = await fetch('./wasmalgos/solveastar.wasm')
-  const buffer = await response.arrayBuffer()
-  const wasm = await WebAssembly.instantiate(buffer, info)
-  const module = wasm.instance.exports
-  const { solveastar, memory } = module
-
-  console.log(module)
-
-  let wallsJSArray = new Int32Array(memory.buffer, offset, walls.length)
-  wallsJSArray.set(walls)
-  const wallsLength = walls.length
-
-  let result = new Int32Array(memory.buffer, 0, gridWidth * gridHeight * 2)
-
-  solveastar(
-    wallsJSArray,
-    wallsLength,
-    result,
+  let result = astarHelperModule.solveastar(
+    vec,
     startRow,
     startCol,
     endRow,
@@ -49,18 +36,43 @@ export const astar = async (
     gridHeight
   )
 
-  let optimumPath = []
-  for (let i = 3; i < result.length; i += 2) {
-    if (result[i] === -1) {
-      break
-    } else {
-      optimumPath.push({ first: result[i], second: result[i + 1] })
-    }
+  const pathArraySize = result.get(0)
+  let optimumPathArray = []
+  for (let i = 3; i < pathArraySize; i += 2) {
+    optimumPathArray.push({ first: result.get(i), second: result.get(i + 1) })
   }
-  // console.log(result)
-  // console.log(optimumPath)
-  wallsJSArray = null
-  result = null
 
-  return optimumPath
+  const visitedNodesArraySize = result.get(pathArraySize + 2)
+  let visitedNodesArray = []
+
+  for (
+    let i = pathArraySize + 3;
+    i < pathArraySize + 2 + visitedNodesArraySize;
+    i += 2
+  ) {
+    if (result.get(i) === startCol && result.get(i + 1) === startRow) {
+      continue
+    }
+    if (result.get(i) === endCol && result.get(i + 1) === endRow) {
+      continue
+    }
+    visitedNodesArray.push({
+      first: result.get(i),
+      second: result.get(i + 1)
+    })
+  }
+
+  const startPoint = {
+    first: startCol,
+    second: startRow
+  }
+  // console.log(visitedNodesArray)
+  visitedNodesArray.sort(
+    (a, b) =>
+      euclideanDistance(a, startPoint) - euclideanDistance(b, startPoint)
+  )
+
+  // console.log(visitedNodesArray)
+
+  return { optimumPathArray, visitedNodesArray }
 }

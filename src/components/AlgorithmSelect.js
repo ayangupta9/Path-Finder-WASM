@@ -13,7 +13,8 @@ const AlgorithmSelect = props => {
   const options = [
     { value: 'AStar', label: 'A Star' },
     { value: 'BFS', label: 'Breadth First Search' },
-    // { value: 'DFS', label: 'Depth First Search' },
+    { value: 'DFS', label: 'Depth First Search' },
+    { value: 'BestFS', label: 'Best First Search' },
     { value: 'Dijkstra', label: 'Dijkstra' }
   ]
 

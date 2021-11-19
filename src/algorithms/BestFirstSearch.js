@@ -1,6 +1,6 @@
-import dfsHelper from './helper/dfsHelper.mjs'
+import bestfsHelper from './helper/bestfsHelper.mjs'
 
-export const dfs = async (
+export const bestfs = async (
   startRow,
   startCol,
   endRow,
@@ -9,18 +9,18 @@ export const dfs = async (
   gridWidth,
   gridHeight
 ) => {
-  const dfsHelperModule = await dfsHelper({
+  const bestfsHelperModule = await bestfsHelper({
     noInitialRun: true,
     noExitRuntime: true
   })
 
-  const vec = dfsHelperModule.returnVector()
+  const vec = bestfsHelperModule.returnVector()
   vec.resize(walls.length + 1, 0)
   for (let i = 0; i < walls.length; i++) {
     vec.set(i, walls[i])
   }
 
-  let result = dfsHelperModule.solveDFS(
+  let result = bestfsHelperModule.solveBestFS(
     vec,
     startRow,
     startCol,

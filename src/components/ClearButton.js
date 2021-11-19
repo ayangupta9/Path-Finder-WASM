@@ -7,7 +7,6 @@ const ClearButton = () => {
 
   function onButtonClick () {
     if (!isCleared) {
-      console.log(isCleared)
       setIsCleared(true)
     }
   }

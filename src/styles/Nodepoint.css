@@ -20,8 +20,14 @@
 .node-start {
   background-color: green;
 }
+
 .node-path {
   background-color: yellow;
+  z-index: 3;
+}
+
+.node-visited {
+  background-color: lightblue;
 }
 
 .node-wall {
