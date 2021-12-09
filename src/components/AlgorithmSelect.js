@@ -20,7 +20,15 @@ const AlgorithmSelect = props => {
 
   return (
     <>
-      <Select options={options} value={value} onChange={handleChange} />
+      <Select
+        label={'Select algorithm'}
+        style={{
+          width: '30%'
+        }}
+        options={options}
+        value={value}
+        onChange={handleChange}
+      />
     </>
   )
 }

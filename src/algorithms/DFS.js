@@ -35,6 +35,7 @@ export const dfs = async (
   for (let i = 1; i < pathArraySize; i += 2) {
     optimumPathArray.push({ first: result.get(i), second: result.get(i + 1) })
   }
+  optimumPathArray.reverse()
 
   const visitedNodesArraySize = result.get(pathArraySize + 2)
   let visitedNodesArray = []
@@ -56,5 +57,29 @@ export const dfs = async (
     })
   }
 
+  // optimumPathArray.forEach((node, id) => {
+  //   if (id < optimumPathArray.length - 1)
+  //     if (
+  //       node.second + 1 === optimumPathArray.at(id + 1).second &&
+  //       node.first === optimumPathArray[id + 1].first
+  //     ) {
+  //       node.path = 'right'
+  //     } else if (
+  //       node.second - 1 === optimumPathArray.at(id + 1).second &&
+  //       node.first === optimumPathArray[id + 1].first
+  //     ) {
+  //       node.path = 'left'
+  //     } else if (
+  //       node.second === optimumPathArray.at(id + 1).second &&
+  //       node.first + 1 === optimumPathArray[id + 1].first
+  //     ) {
+  //       node.path = 'down'
+  //     } else if (
+  //       node.second === optimumPathArray.at(id + 1).second &&
+  //       node.first - 1 === optimumPathArray[id + 1].first
+  //     ) {
+  //       node.path = 'up'
+  //     }
+  // })
   return { optimumPathArray, visitedNodesArray }
 }

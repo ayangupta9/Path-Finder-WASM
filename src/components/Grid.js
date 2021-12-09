@@ -1,56 +1,59 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import Nodepoint from './Nodepoint'
 import '../styles/Grid.css'
 import { NodeContext } from '../contexts/NodeContext'
 
-export const gridWidth = 40
-export const gridHeight = 20
-
-const getInitialGrid = () => {
-  const grid = []
-  for (let col = 0; col < gridWidth; col++) {
-    const currentRow = []
-    for (let row = 0; row < gridHeight; row++) {
-      currentRow.push(createNode(row, col))
-    }
-    grid.push(currentRow)
-  }
-  return grid
-}
-
-const createNode = (col, row) => {
-  return {
-    col,
-    row,
-    isStart: false,
-    isFinish: false,
-    distance: Infinity,
-    isVisited: false,
-    isWall: false,
-    previousNode: null
-  }
-}
+// const gridWidth = 40
+// const gridHeight = 20
 
 const Grid = props => {
   const {
+    grid,
+    setGrid,
     isStart,
     isFinish,
     setIsStart,
     setIsFinish,
     isCleared,
     setIsCleared,
-    startPos,
+    // startPos,
     setStartPos,
-    finishPos,
+    // finishPos,
     setFinishPos,
     wallPos,
-    setWallPos
+    setWallPos,
+    gridWidth,
+    gridHeight
   } = useContext(NodeContext)
-  const [grid, setGrid] = useState([])
   const [mousePressed, setMousePressed] = useState(false)
 
-  const clearGrid = () => {
-    setGrid(getInitialGrid())
+  const getInitialGrid = (gw, gh) => {
+    const grid = []
+    for (let col = 0; col < gw; col++) {
+      const currentRow = []
+      for (let row = 0; row < gh; row++) {
+        currentRow.push(createNode(row, col))
+      }
+      grid.push(currentRow)
+    }
+    return grid
+  }
+
+  const createNode = (col, row) => {
+    return {
+      col,
+      row,
+      isStart: false,
+      isFinish: false,
+      distance: Infinity,
+      isVisited: false,
+      isWall: false,
+      previousNode: null
+    }
+  }
+
+  const clearGrid = useCallback(() => {
+    console.log(56)
     Array.from(document.getElementsByClassName('node-path')).forEach(node => {
       node.classList.remove('node-path')
     })
@@ -65,9 +68,9 @@ const Grid = props => {
     setStartPos({ row: -1, col: -1 })
     setFinishPos({ row: -1, col: -1 })
     setWallPos([])
-
-    console.log(document.getElementsByClassName('node-path'))
-  }
+    console.log(71)
+    // eslint-disable-next-line
+  }, [])
 
   const handleMouseDown = (row, col) => {
     if (props.choosingOptions === 'wall') {
@@ -133,14 +136,23 @@ const Grid = props => {
   }
 
   useEffect(() => {
-    if (isCleared) {
+    console.log(isCleared)
+    if (isCleared === true) {
       clearGrid()
+      setGrid(getInitialGrid(gridWidth, gridHeight))
+      // setIsCleared(false)
     }
-  }, [isCleared, setIsCleared])
+  }, [isCleared])
 
   useEffect(() => {
-    setGrid(getInitialGrid())
+    setGrid(getInitialGrid(gridWidth, gridHeight))
+    clearGrid()
   }, [])
+
+  useEffect(() => {
+    setGrid(getInitialGrid(gridWidth, gridHeight))
+    clearGrid()
+  }, [gridWidth, gridHeight])
 
   const onNodeClick = (row, col) => {
     let newGrid = grid.slice()
@@ -184,8 +196,6 @@ const Grid = props => {
             {row.map((node, nodeId) => {
               return (
                 <Nodepoint
-                  grid={grid}
-                  setGrid={setGrid}
                   onNodeClick={onNodeClick}
                   choosingOptions={props.choosingOptions}
                   row={node.row}

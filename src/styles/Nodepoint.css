@@ -10,26 +10,26 @@
   height: 20px;
   position: absolute;
   opacity: 0.3;
-  background-color: grey;
+  background-color: #808080;
 }
 
 .node-finish {
-  background-color: red;
+  background-color: #ff0000;
 }
 
 .node-start {
-  background-color: green;
+  background-color: #008000;
 }
 
 .node-path {
-  background-color: yellow;
+  background-color: #ffff00;
   z-index: 3;
 }
 
 .node-visited {
-  background-color: lightblue;
+  background-color: #add8e6;
 }
 
 .node-wall {
-  background-color: rgb(12, 53, 71);
+  background-color: #0c3547;
 }

@@ -35,6 +35,7 @@ class Filters extends React.Component {
   render () {
     return (
       <RadioButtonGroup
+        label={'Select node'}
         id='radio-button-group-component-1'
         options={options}
         value={this.state.value}

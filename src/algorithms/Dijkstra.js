@@ -71,6 +71,7 @@ export const dijkstra = async (
   for (let i = 1; i < pathArraySize; i += 2) {
     optimumPathArray.push({ first: result.get(i), second: result.get(i + 1) })
   }
+  optimumPathArray.reverse()
 
   const visitedNodesArraySize = result.get(pathArraySize + 2)
   let visitedNodesArray = []
@@ -104,7 +105,29 @@ export const dijkstra = async (
       euclideanDistance(a, startPoint) - euclideanDistance(b, startPoint)
   )
 
-  // console.log(visitedNodesArray)
+  // visitedNodesArray.forEach((node, id) => {
+  //   if (
+  //     node.first === visitedNodesArray[id + 1].first - 1 &&
+  //     node.second === visitedNodesArray[id + 1].second
+  //   ) {
+  //     node.sign = 'right'
+  //   } else if (
+  //     node.first === visitedNodesArray[id + 1].first + 1 &&
+  //     node.second === visitedNodesArray[id + 1].second
+  //   ) {
+  //     node.sign = 'left'
+  //   } else if (
+  //     node.first === visitedNodesArray[id + 1].first &&
+  //     node.second === visitedNodesArray[id + 1].second - 1
+  //   ) {
+  //     node.sign = 'down'
+  //   } else if (
+  //     node.first === visitedNodesArray[id + 1].first &&
+  //     node.second === visitedNodesArray[id + 1].second + 1
+  //   ) {
+  //     node.sign = 'up'
+  //   }
+  // })
 
   return { optimumPathArray, visitedNodesArray }
 }

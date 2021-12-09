@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import { NodeContext } from '../contexts/NodeContext'
 import { Button } from 'react-rainbow-components'
+import { FaEraser } from 'react-icons/fa'
 
 const ClearButton = () => {
   const { isCleared, setIsCleared } = useContext(NodeContext)
@@ -13,14 +14,19 @@ const ClearButton = () => {
 
   return (
     <Button
+    id="clearGridButton"
       style={{
-        width: 200
+        width: 200,
+        flex: 1,
+        marginRight: '10px'
       }}
       onClick={onButtonClick}
-      label='CLEAR GRID'
       variant='neutral'
       className='rainbow-m-around_medium'
-    />
+    >
+      <FaEraser />
+      &nbsp;CLEAR GRID
+    </Button>
   )
 }
 

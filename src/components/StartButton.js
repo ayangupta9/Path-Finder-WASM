@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { Button } from 'react-rainbow-components'
 import { astar } from '../algorithms/Astar'
 import { dijkstra } from '../algorithms/Dijkstra'
@@ -7,19 +7,13 @@ import 'react-toastify/dist/ReactToastify.css'
 import 'animate.css'
 import { NodeContext } from '../contexts/NodeContext'
 import { toast, ToastContainer } from 'react-toastify'
-import { gridHeight, gridWidth } from './Grid'
+// import { gridHeight, gridWidth } from './Grid'
 import { dfs } from '../algorithms/DFS'
 import { bestfs } from '../algorithms/BestFirstSearch'
-import { testWasm } from '../algorithms/testWasm'
+import { FaPlay } from 'react-icons/fa'
 
 const StartButton = ({ algorithmOptions }) => {
   const nodeContext = useContext(NodeContext)
-
-  const [isVisualize, setIsVisualize] = useState(false)
-
-  // useEffect(async () => {
-  //   await testWasm()
-  // }, [])
 
   const visualizeOptimumPath = result => {
     let optimumPathArray = result.optimumPathArray
@@ -28,7 +22,6 @@ const StartButton = ({ algorithmOptions }) => {
       toast('No path available')
     } else {
       let resultIterator = 0
-      optimumPathArray.reverse()
       setInterval(() => {
         if (resultIterator === optimumPathArray.length) {
           clearInterval()
@@ -84,18 +77,23 @@ const StartButton = ({ algorithmOptions }) => {
       return
     }
 
-    Array.from(document.getElementsByClassName('nodepoint')).forEach(node => {
-      node.classList.remove('node-path', 'note-visited', 'animate__fadeIn')
+    Array.from(document.getElementsByClassName('node-path')).forEach(node => {
+      node.classList.remove('node-path', 'animate__fadeIn')
     })
+    Array.from(document.getElementsByClassName('node-visited')).forEach(
+      node => {
+        node.classList.remove('node-visited')
+      }
+    )
 
     let walls = []
 
-    nodeContext.wallPos.map(w => {
+    nodeContext.wallPos.forEach(w => {
       walls = [w.col, w.row, ...walls]
     })
 
-    const gw = gridWidth
-    const gh = gridHeight
+    const gw = nodeContext.gridWidth
+    const gh = nodeContext.gridHeight
 
     let result
 
@@ -164,6 +162,22 @@ const StartButton = ({ algorithmOptions }) => {
         break
     }
 
+    let pathPos = []
+    result.optimumPathArray.forEach(pathNode => {
+      pathPos.push({
+        row: pathNode.second,
+        col: pathNode.first,
+        path: pathNode.path
+      })
+    })
+    nodeContext.setPathPos(pathPos)
+
+    let visitedPos = []
+    result.visitedNodesArray.forEach(visitedNode => {
+      visitedPos.push({ row: visitedNode.second, col: visitedNode.first })
+    })
+    nodeContext.setVisitedPos(visitedPos)
+
     visualizeVisitedNodes(result)
     setTimeout(() => {
       visualizeOptimumPath(result)
@@ -177,12 +191,16 @@ const StartButton = ({ algorithmOptions }) => {
           await visualizeAlgo()
         }}
         style={{
-          width: 200
+          height: 50,
+          width: 400
         }}
-        label='VISUALIZE'
+        // label=''
         variant='neutral'
         className='rainbow-m-around_medium'
-      />
+      >
+        <FaPlay />
+        &nbsp;VISUALIZE
+      </Button>
       <ToastContainer
         pauseOnHover={false}
         position='bottom-right'

@@ -1,11 +1,22 @@
 .App {
   height: 100%;
   width: 100%;
+  max-width: 100%;
   background-color: #ffffff;
-  display: grid;
+  display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   color: #333333;
+}
+
+.home {
+  height: 100%;
+  width: 100%;
+}
+
+.ThreeD {
+  height: 100%;
+  width: 100%;
 }
 
 h1 {

@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { NodeContext } from '../contexts/NodeContext'
+import React, {  useEffect, useState } from 'react'
 import '../styles/Nodepoint.css'
 
 const Nodepoint = props => {
